@@ -8,19 +8,20 @@ use crate::{
 pub async fn get_basic_liquidity_ratio(
     query: Query<BasicLiquidityRatio>,
 ) -> Json<BasicLiquidityRatio> {
-    let mut model = query.0;
-    model.calculate();
-    Json(model)
+    create_response(query.0).await
 }
 
 pub async fn get_break_even_point(query: Query<BreakEvenPoint>) -> Json<BreakEvenPoint> {
-    let mut model = query.0;
-    model.calculate();
-    Json(model)
+    create_response(query.0).await
 }
 
 pub async fn get_compound_interest(query: Query<CompoundInterest>) -> Json<CompoundInterest> {
-    let mut model = query.0;
-    model.calculate();
-    Json(model)
+    create_response(query.0).await
+}
+
+//TODO: Figure out how to route all responses to one handler
+async fn create_response<T: Calculation>(model: T) -> Json<T> {
+    let mut response = model;
+    response.calculate();
+    Json(response)
 }
