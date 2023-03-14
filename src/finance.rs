@@ -24,9 +24,12 @@ impl Calculation for CashFlow {
 
 impl Calculation for CompoundInterest {
     fn calculate(&mut self) {
-        let pow = self.times_cmpd_per_year * self.length_borrowed_years;
-        let rate_div = self.annual_interest_rate / self.times_cmpd_per_year;
-        let result = self.principal*(f64::powf(1.0 + rate_div, pow));
-        self.result = Some(result)
+        self.result = Some(
+            self.principal
+                * (f64::powf(
+                    1.0 + (self.annual_interest_rate / self.times_cmpd_per_year),
+                    self.times_cmpd_per_year * self.length_borrowed_years,
+                )),
+        )
     }
 }
