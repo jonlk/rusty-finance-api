@@ -1,6 +1,10 @@
 mod finance;
 mod models;
+
 use axum::{extract::Query, routing::get, Json, Router};
+use chrono::Utc;
+use serde::{Deserialize, Serialize};
+
 use models::{
     BasicLiquidityRatio, BreakEvenPoint, CashFlow, CompoundInterest, NetIncome, NetWorth, PERatio,
     RuleOf72, SimpleInterest, VariationOfInvestment,
@@ -28,8 +32,20 @@ async fn main() {
         .unwrap();
 }
 
-async fn create_response<T: Calculation>(query: Query<T>) -> Json<T> {
+async fn create_response<T: Calculation>(query: Query<T>) -> Json<ResponseModel<T>> {
     let mut response = query.0;
     response.calculate();
-    Json(response)
+    let response_model = ResponseModel {
+        id: String::from("test"),
+        timestamp: String::from(Utc::now().to_string()),
+        data: response,
+    };
+    Json(response_model)
+}
+
+#[derive(Serialize, Deserialize)]
+struct ResponseModel<T: Calculation> {
+    id: String,
+    timestamp: String,
+    data: T,
 }
