@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-api
+spec:
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: finance-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: finance-api
+    spec:
+      containers:
+        - name: finance-api
+          image: vertwave/micro-finance-api:1.0.0
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            timeoutSeconds: 15
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          imagePullPolicy: Never
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: finance-api-service
+spec:
+  selector:
+    app: finance-api
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      name: http-unsecured
+      port: 3000
+      targetPort: 3000
