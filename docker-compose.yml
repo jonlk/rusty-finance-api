@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  rusty-finance-api:
+    image: vertwave/rusty-finance-api
+    build: 
+      context: .
+      dockerfile: Dockerfile

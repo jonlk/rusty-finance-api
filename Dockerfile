@@ -1,4 +1,4 @@
-FROM rust:1.68.0 as builder
+FROM rust:1.69.0 as builder
 
 WORKDIR /usr/src/rusty-finance-api
 
